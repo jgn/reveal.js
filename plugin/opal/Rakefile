@@ -1,0 +1,18 @@
+require 'bundler'
+Bundler.require
+
+task :default => :build
+
+desc 'Build a fresh opal.js'
+task 'build' do
+  require 'opal/util'
+  env = Opal::Environment.new
+  path = File.expand_path(File.dirname(__FILE__))
+  files = [ 'opal', 'opal-parser' ]
+  files.each do |file|
+    filepath = File.join(path, "#{file}.min.js")
+    File.open(filepath, 'w') do |f|
+      f.write Opal::Util.uglify(env[file].to_s)
+    end
+  end
+end
